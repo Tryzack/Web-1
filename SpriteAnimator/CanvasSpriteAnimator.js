@@ -27,18 +27,10 @@ export default class CanvasSpriteAnimator extends HTMLElement {
 		animation.canvas = this.#canvas;
 		animation.ctx = this.#ctx;
 
-		if (!animation.location_in_canvas_X) {
-			animation.location_in_canvas_X = 0;
-		}
-		if (!animation.location_in_canvas_Y) {
-			animation.location_in_canvas_Y = 0;
-		}
-		if (!animation.destination_canvas_height) {
-			animation.destination_canvas_height = this.#canvas.height;
-		}
-		if (!animation.destination_canvas_width) {
-			animation.destination_canvas_width = this.#canvas.width;
-		}
+		if (!animation.location_in_canvas_X) animation.location_in_canvas_X = 0;
+		if (!animation.location_in_canvas_Y) animation.location_in_canvas_Y = 0;
+		if (!animation.destination_canvas_height) animation.destination_canvas_height = this.#canvas.height;
+		if (!animation.destination_canvas_width) animation.destination_canvas_width = this.#canvas.width;
 
 		let loc = [];
 		for (let j = 0; j < animation.frames; j++) {
@@ -55,7 +47,12 @@ export default class CanvasSpriteAnimator extends HTMLElement {
 	#animate(nombre) {
 		const animation = this.#animations.find((a) => a.nombre === nombre);
 		if (!animation || !animation.isActive) return;
-		animation.ctx.clearRect(animation.location_in_canvas_X, animation.location_in_canvas_Y, animation.destination_canvas_width, animation.destination_canvas_height);
+		animation.ctx.clearRect(
+			animation.location_in_canvas_X,
+			animation.location_in_canvas_Y,
+			animation.destination_canvas_width,
+			animation.destination_canvas_height
+		);
 		let position = Math.floor(animation.gameFrame / animation.staggerFrames) % animation.spriteAnimation.loc.length;
 		let frameX = animation.width * position;
 		let frameY = 0;
@@ -140,7 +137,7 @@ export default class CanvasSpriteAnimator extends HTMLElement {
 		if (style) this.style = style;
 	}
 
-	returnAnimations(){
+	returnAnimations() {
 		return this.#animations;
 	}
 }
