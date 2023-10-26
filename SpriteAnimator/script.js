@@ -1,6 +1,6 @@
 import CanvasSpriteAnimator from "./CanvasSpriteAnimator.js";
 
-document.getElementById("animations").addEventListener("change", function (e) {
+document.getElementById("animations").addEventListener("change", (e) => {
 	animation.forEach((element) => {
 		if (element == e.target.value) canvas.startAnimation(element);
 		else canvas.stopAnimation(element);
@@ -10,6 +10,8 @@ document.getElementById("animations").addEventListener("change", function (e) {
 const spriteWidth = 128;
 const spriteHeight = 128;
 const spriteType = "Fighter";
+
+//Create options for animations
 let animation = ["attack1", "attack2", "attack3", "dead", "hurt", "idle", "jump", "run", "shield", "walk"];
 let defaultAnimation = animation[5];
 animation.forEach((element) => {
@@ -21,14 +23,18 @@ animation.forEach((element) => {
 	optionPanel.appendChild(option);
 });
 
+//Create background
+//background is being called first so it is behind all animations
 let background = new CanvasSpriteAnimator({
-	animations: [{
-		nombre: "background",
+	animations: [
+		{
+			nombre: "background",
 			frames: 1,
 			width: 600,
 			height: 600,
 			source: `./sprites/background.png`,
-	}],
+		},
+	],
 	canvas_id: "canvas",
 	canvas_width: 600,
 	canvas_height: 600,
@@ -39,26 +45,28 @@ let background = new CanvasSpriteAnimator({
         transform: translate(-50%, -50%);
         border-style: solid;
     `,
-})
+});
 
-background.startAnimation('background')
+background.startAnimation("background");
 
+/*
 
-//Crear otros sprites
-
-/* 
+//Create canvas2 and canvas3 as aditional examples
+//canvas2 and canvas3 are being called first than canvas so they are behind canvas but in front of background
 let canvas2 = new CanvasSpriteAnimator({
-	animations:[{
-		nombre: 'runningShinobi',
-		frames: 5,
-		width: spriteWidth,
-		height: spriteHeight,
-		destination_canvas_height: 100,
-		destination_canvas_width: 100,
-		location_in_canvas_Y: 450,
-		location_in_canvas_X: 0,
-		source: `./sprites/Shinobi/Run.png`
-	}],
+	animations: [
+		{
+			nombre: "runningShinobi",
+			frames: 5,
+			width: spriteWidth,
+			height: spriteHeight,
+			destination_canvas_height: 100,
+			destination_canvas_width: 100,
+			location_in_canvas_Y: 450,
+			location_in_canvas_X: 0,
+			source: `./sprites/Shinobi/Run.png`,
+		},
+	],
 	canvas_id: "canvas2",
 	canvas_width: 600,
 	canvas_height: 600,
@@ -72,17 +80,19 @@ let canvas2 = new CanvasSpriteAnimator({
 });
 
 let canvas3 = new CanvasSpriteAnimator({
-	animations:[{
-		nombre: 'walkingSamurai',
-		frames: 5,
-		width: spriteWidth,
-		height: spriteHeight,
-		destination_canvas_height: 100,
-		destination_canvas_width: 100,
-		location_in_canvas_Y: 400,
-		location_in_canvas_X: 0,
-		source: `./sprites/Samurai/Walk.png`
-	}],
+	animations: [
+		{
+			nombre: "walkingSamurai",
+			frames: 5,
+			width: spriteWidth,
+			height: spriteHeight,
+			destination_canvas_height: 100,
+			destination_canvas_width: 100,
+			location_in_canvas_Y: 400,
+			location_in_canvas_X: 0,
+			source: `./sprites/Samurai/Walk.png`,
+		},
+	],
 	canvas_id: "canvas3",
 	canvas_width: 600,
 	canvas_height: 600,
@@ -94,35 +104,39 @@ let canvas3 = new CanvasSpriteAnimator({
         border-style: solid;
     `,
 });
-canvas2.startAnimation('runningShinobi')
-canvas3.startAnimation('walkingSamurai')
+canvas2.startAnimation("runningShinobi");
+canvas3.startAnimation("walkingSamurai");
 
 const shinobispeed = 1;
 const samuraispeed = 0.5;
-let samurai = canvas3.returnAnimations();
-let shinobi = canvas2.returnAnimations();
+let samurai = canvas3.getAnimations();
+let shinobi = canvas2.getAnimations();
+
+//Make canvas2 and canvas3 move
 setInterval(() => {
-    let samuraiAnimation = samurai.find(a => a.nombre === 'walkingSamurai');
-    let shinobiAnimation = shinobi.find(a => a.nombre === 'runningShinobi');
+	let samuraiAnimation = samurai.find((a) => a.nombre === "walkingSamurai");
+	let shinobiAnimation = shinobi.find((a) => a.nombre === "runningShinobi");
 
-    if (samuraiAnimation.location_in_canvas_X <= 610) {
-        samuraiAnimation.location_in_canvas_X += samuraispeed;
-    } else {
-        samuraiAnimation.location_in_canvas_X = -100;
-    }
+	if (samuraiAnimation.location_in_canvas_X <= 610) {
+		samuraiAnimation.location_in_canvas_X += samuraispeed;
+	} else {
+		samuraiAnimation.location_in_canvas_X = -100;
+	}
 
-    if (shinobiAnimation.location_in_canvas_X <= 610) {
-        shinobiAnimation.location_in_canvas_X += shinobispeed;
-    } else {
-        shinobiAnimation.location_in_canvas_X = -100;
-    }
-
-    canvas3.updateAnimation({ current_name: 'walkingSamurai', location_in_canvas_X: samuraiAnimation.location_in_canvas_X });
-    canvas2.updateAnimation({ current_name: 'runningShinobi', location_in_canvas_X: shinobiAnimation.location_in_canvas_X });
+	if (shinobiAnimation.location_in_canvas_X <= 610) {
+		shinobiAnimation.location_in_canvas_X += shinobispeed;
+	} else {
+		shinobiAnimation.location_in_canvas_X = -100;
+	}
+	//update canvas2 and canvas3 position
+	canvas3.updateAnimation({ current_name: "walkingSamurai", location_in_canvas_X: samuraiAnimation.location_in_canvas_X });
+	canvas2.updateAnimation({ current_name: "runningShinobi", location_in_canvas_X: shinobiAnimation.location_in_canvas_X });
 }, 10);
- */
 
+*/
 
+//Create canvas
+//canvas is being called last so it is in front of all animations
 let canvas = new CanvasSpriteAnimator({
 	animations: [
 		{
