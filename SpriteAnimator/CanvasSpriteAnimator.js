@@ -1,9 +1,35 @@
+//Might implement greensock, phraser, createJs, or pixiJs in the future
+
 export default class CanvasSpriteAnimator extends HTMLElement {
+	
 	#animations;
 	#addToElement;
 	#canvas;
 	#ctx;
 
+	/**
+	 * Creates a new CanvasSpriteAnimator instance.
+	 * @constructor
+	 * @param {Object} - contains the parameters for the CanvasSpriteAnimator instance.
+	 * 	@property {Object[]} animations - An array of animation objects.
+	 *		 Each animation object should have the following properties:
+	 *	   @property {string} nombre - The name of the animation.
+	 *	   @property {Image} playerImage - The image to use for the animation.
+	 *	   @property {number} frames - The amount of Frames in the animation.
+	 *	   @property {number} width - The width of each frame in the animation.
+	 *	   @property {number} height - The height of each frame in the animation.
+	 *	   @property {number} location_in_canvas_X - The X location of the animation in the canvas.
+	 *	   @property {number} location_in_canvas_Y - The Y location of the animation in the canvas.
+	 *	   @property {number} destination_canvas_height - The height of the animation in the canvas.
+	 *	   @property {number} destination_canvas_width - The width of the animation in the canvas.
+	 *	   @property {string} source - The source of the spritesheet to use for the animation (has to be a png with vertical only sprites).
+	 *	   @property {string} [onAnimationEnd] - The function to call when the animation ends.
+	 * 	@param {string} canvas_id - The ID of the canvas element to use.
+	 * 	@param {number} canvas_width - The width of the canvas element.
+	 * 	@param {number} canvas_height - The height of the canvas element.
+	 * 	@param {string} [style] - The CSS style to apply to the canvas element.
+	 * 	@param {HTMLElement} [addToElement] - The element to append the canvas element to.
+	 */
 	constructor({ animations = [], canvas_id = "canvas", canvas_width = 500, canvas_height = 500, style, addToElement }) {
 		super();
 		this.attachShadow({ mode: "open" });
@@ -80,11 +106,31 @@ export default class CanvasSpriteAnimator extends HTMLElement {
 		}
 	}
 
+	/**
+	 * @function addAnimation - Adds an animation to the canvas.
+	 * @param {Object} animation - The animation object to add.
+	 *  The animation object should have the following properties:
+	 *	 @property {string} nombre - The name of the animation.
+	 *   @property {Image} playerImage - The image to use for the animation.
+	 *   @property {number} frames - The amount of Frames in the animation.
+	 *   @property {number} width - The width of each frame in the animation.
+	 *   @property {number} height - The height of each frame in the animation.
+	 *   @property {number} location_in_canvas_X - The X location of the animation in the canvas.
+	 *   @property {number} location_in_canvas_Y - The Y location of the animation in the canvas.
+	 *   @property {number} destination_canvas_height - The height of the animation in the canvas.
+	 * 	 @property {number} destination_canvas_width - The width of the animation in the canvas.
+	 *   @property {string} source - The source of the spritesheet to use for the animation (has to be a png with vertical only sprites).
+	 *   @property {string} [onAnimationEnd] - The function to call when the animation ends.
+	 */
 	addAnimation(animation) {
 		this.#initializeAnimation(animation);
 		this.#animations.push(animation);
 	}
 
+	/**
+	 * @function startAnimation - Starts an animation.
+	 * @param {string} nombre - The name of the animation to start.
+	 */
 	startAnimation(nombre) {
 		const animation = this.#animations.find((a) => a.nombre === nombre);
 		if (animation && !animation.isActive) {
@@ -93,6 +139,10 @@ export default class CanvasSpriteAnimator extends HTMLElement {
 		}
 	}
 
+	/**
+	 * @function stopAnimation - Stops an animation.
+	 * @param {string} nombre - The name of the animation to stop if it is active.
+	 */
 	stopAnimation(nombre) {
 		const animation = this.#animations.find((a) => a.nombre === nombre);
 		if (animation && animation.isActive) {
@@ -101,11 +151,30 @@ export default class CanvasSpriteAnimator extends HTMLElement {
 		}
 	}
 
+	/**
+	 * @function addToBody - Adds the canvas element to the body of the document.
+	 * If the addToElement property was set in the constructor, it will add the canvas element to that element instead.
+	 */
 	addToBody() {
 		if (this.#addToElement) document.getElementById(this.#addToElement).appendChild(this);
 		else document.body.appendChild(this);
 	}
 
+	/**
+	 * @function updateAnimation - Updates an animation.
+	 * @param {Object} animation - The animation object to update.
+	 * The animation object should have the following properties:
+	 *	@property {string} current_name - The current name of the animation.
+	 *	@property {string} [nombre] - The new name of the animation.
+	 * 	@property {number} [width] - The new width of each frame in the animation.
+	 * 	@property {number} [height] - The new height of each frame in the animation.
+	 * 	@property {number} [destination_canvas_height] - The new height of the animation in the canvas.
+	 * 	@property {number} [destination_canvas_width] - The new width of the animation in the canvas.
+	 * 	@property {number} [location_in_canvas_X] - The new X location of the animation in the canvas.
+	 * 	@property {number} [location_in_canvas_Y] - The new Y location of the animation in the canvas.
+	 * 	@property {string} [source] - The new source of the spritesheet to use for the animation (has to be a png with vertical only sprites).
+	 * 	@property {string} [onAnimationEnd] - The new function to call when the animation ends.
+	 */
 	updateAnimation({
 		current_name,
 		nombre,
@@ -116,6 +185,7 @@ export default class CanvasSpriteAnimator extends HTMLElement {
 		location_in_canvas_X,
 		location_in_canvas_Y,
 		source,
+		onAnimationEnd,
 	}) {
 		const animation = this.#animations.find((a) => a.nombre === current_name);
 		if (animation) {
@@ -127,9 +197,17 @@ export default class CanvasSpriteAnimator extends HTMLElement {
 			if (location_in_canvas_X) animation.location_in_canvas_X = location_in_canvas_X;
 			if (location_in_canvas_Y) animation.location_in_canvas_Y = location_in_canvas_Y;
 			if (source) animation.source = source;
+			if (onAnimationEnd) animation.onAnimationEnd = onAnimationEnd;
 		}
 	}
 
+	/**
+	 * @function updateCanvas - Updates the canvas element.
+	 * @param {string} [canvas_id] - The ID of the canvas element to use.
+	 * @param {number} [canvas_width] - The width of the canvas element.
+	 * @param {number} [canvas_height] - The height of the canvas element.
+	 * @param {string} [style] - The CSS style to apply to the canvas element.
+	 */
 	updateCanvas({ canvas_id, canvas_width, canvas_height, style }) {
 		if (canvas_id) this.#canvas.id = canvas_id;
 		if (canvas_width) this.#canvas.width = canvas_width;
@@ -137,7 +215,11 @@ export default class CanvasSpriteAnimator extends HTMLElement {
 		if (style) this.style = style;
 	}
 
-	returnAnimations() {
+	/**
+	 * @function returnAnimations - Returns the animations array.
+	 * @returns {Object[]} The animations array.
+	 */
+	getAnimations() {
 		return this.#animations;
 	}
 }
