@@ -3,17 +3,19 @@ import MapComponent from "./MapComponent.js";
 // Get the button elements from the HTML
 const generateLinkButton = document.getElementById("generate-link-button");
 const getCurrentLocationButton = document.getElementById("get-current-location-button");
+const casaLocationButton = document.getElementById("casa-location-button");
+const uruLocationButton = document.getElementById("uru-location-button");
 
 //MapComponent
 let mapComponent = new MapComponent({
 	latitud: 0,
 	longitud: 0,
 	id_div: "map",
-    style: `display:grid;
+	style: `display:grid;
     grid-template-columns: 1fr;
     grid-gap: 1rem;
     `,
-    mapStyle: `
+	mapStyle: `
     width: 100%;
     height: 350px;
     `,
@@ -25,18 +27,22 @@ let mapComponent = new MapComponent({
 
 // Add event listeners to the buttons
 generateLinkButton.addEventListener("click", () => {
-    // Get the latitude and longitude values from the input elements
-    const latitude = document.getElementById("latitude-input");
-    const longitude = document.getElementById("longitude-input");
+	// Get the latitude and longitude values from the input elements
+	const latitude = document.getElementById("latitude-input");
+	const longitude = document.getElementById("longitude-input");
 	mapComponent.update(latitude.value, longitude.value);
 });
 
-casa.addEventListener("click", () => {
+casaLocationButton.addEventListener("click", () => {
 	mapComponent.update(10.720279337988682, -71.61334342264412);
+	document.getElementById("latitude-input").value = 10.720279337988682;
+	document.getElementById("longitude-input").value = -71.61334342264412;
 });
 
-uru.addEventListener("click", () => {
+uruLocationButton.addEventListener("click", () => {
 	mapComponent.update(10.649569259463494, -71.59664274623904);
+	document.getElementById("latitude-input").value = 10.649569259463494;
+	document.getElementById("longitude-input").value = -71.59664274623904;
 });
 
 getCurrentLocationButton.addEventListener("click", () => {
@@ -55,7 +61,6 @@ getCurrentLocationButton.addEventListener("click", () => {
 				// Get the latitude and longitude values from the position object
 				const latitude = position.coords.latitude;
 				const longitude = position.coords.longitude;
-				console.log(position.coords.accuracy)
 				mapComponent.update(latitude, longitude);
 
 				// Place latitude and longitude values in the input elements
@@ -65,11 +70,8 @@ getCurrentLocationButton.addEventListener("click", () => {
 			null,
 			options
 		);
-
 	} else {
 		// Geolocation is not supported by the browser
 		alert("Geolocation is not supported by your browser.");
 	}
-
-
 });
