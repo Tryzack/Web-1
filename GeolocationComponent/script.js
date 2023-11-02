@@ -1,77 +1,55 @@
-import MapComponent from "./MapComponent.js";
-
-// Get the button elements from the HTML
-const generateLinkButton = document.getElementById("generate-link-button");
-const getCurrentLocationButton = document.getElementById("get-current-location-button");
-const casaLocationButton = document.getElementById("casa-location-button");
-const uruLocationButton = document.getElementById("uru-location-button");
-
-//MapComponent
-let mapComponent = new MapComponent({
-	latitud: 0,
-	longitud: 0,
-	id_div: "map",
-	style: `display:grid;
-    grid-template-columns: 1fr;
-    grid-gap: 1rem;
-    `,
-	mapStyle: `
-    width: 100%;
-    height: 350px;
-    `,
-	linkStyle: `
-		color: #ffffff;
-		justify-self: center;
-	`,
-});
-
-// Add event listeners to the buttons
-generateLinkButton.addEventListener("click", () => {
-	// Get the latitude and longitude values from the input elements
-	const latitude = document.getElementById("latitude-input");
-	const longitude = document.getElementById("longitude-input");
-	mapComponent.update(latitude.value, longitude.value);
-});
-
-casaLocationButton.addEventListener("click", () => {
-	mapComponent.update(10.720279337988682, -71.61334342264412);
-	document.getElementById("latitude-input").value = 10.720279337988682;
-	document.getElementById("longitude-input").value = -71.61334342264412;
-});
-
-uruLocationButton.addEventListener("click", () => {
-	mapComponent.update(10.649569259463494, -71.59664274623904);
-	document.getElementById("latitude-input").value = 10.649569259463494;
-	document.getElementById("longitude-input").value = -71.59664274623904;
-});
-
-getCurrentLocationButton.addEventListener("click", () => {
-	// Options for the getCurrentPosition() method
-	const options = {
-		enableHighAccuracy: true,
-		timeout: 5000,
-		maximumAge: 0,
-	};
-
-	// Check if geolocation is supported by the browser
-	if (navigator.geolocation) {
-		// Get the current position
-		navigator.geolocation.getCurrentPosition(
-			(position) => {
-				// Get the latitude and longitude values from the position object
-				const latitude = position.coords.latitude;
-				const longitude = position.coords.longitude;
-				mapComponent.update(latitude, longitude);
-
-				// Place latitude and longitude values in the input elements
-				document.getElementById("latitude-input").value = latitude;
-				document.getElementById("longitude-input").value = longitude;
-			},
-			null,
-			options
-		);
-	} else {
-		// Geolocation is not supported by the browser
-		alert("Geolocation is not supported by your browser.");
+export default class MapComponent extends HTMLElement {
+	#lat;
+	#lng;
+	constructor(data) {
+		super();
+		this.#assignValues(data);
+		this.addToBody();
 	}
-});
+
+	#assignValues(data) {
+		this.#lat = data.latitud;
+		this.#lng = data.longitud;
+		if (data.id) this.id = data.id;
+		else this.id = "map-component";
+		if (data.style) this.style = data.style;
+		if (data.id_div) this.divId = data.id_div;
+		else this.divId = "map";
+		if (data.mapStyle) this.mapStyle = data.mapStyle;
+		if (data.linkStyle) this.linkStyle = data.linkStyle;
+	}
+
+	init() {
+		if (!this.#lat || !this.#lng) throw new Error("You must provide a latitude and a longitude");
+		var mapPreview = document.createElement("iframe");
+		mapPreview.src = `https://maps.google.com/maps?q=${this.#lat},${this.#lng}&z=15&output=embed`;
+		if (this.mapStyle) mapPreview.style = this.mapStyle;
+		this.appendChild(mapPreview);
+
+		var mapLink = document.createElement("a");
+		mapLink.href = `https://www.google.com/maps/?q=${this.#lat},${this.#lng}`;
+		mapLink.innerText = "Ver en Google Maps";
+		mapLink.id = "map-link";
+		if (this.linkStyle) mapLink.style = this.linkStyle;
+		this.appendChild(mapLink);
+	}
+
+	update(newLat, newLng) {
+		this.#lat = newLat;
+		this.#lng = newLng;
+		this.innerHTML = "";
+		this.init();
+		this.addToBody();
+	}
+	addToBody() {
+		if (this.divId) {
+			if (document.getElementById(this.divId)) {
+				document.getElementById(this.divId).appendChild(this);
+			} else {
+				document.body.appendChild(this);
+			}
+		}
+	}
+}
+
+customElements.define("map-component", MapComponent);
