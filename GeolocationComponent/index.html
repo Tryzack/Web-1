@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Google Maps Link Generator</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+
+    <div id="container">
+      <h1>Google Maps Link Generator</h1>
+      <p>Introduce la latitud y longitud de la localizacion para obtener un link y verlo en Google Maps</p>
+      <form id="form">
+        <div class="input-group">
+          <label for="latitude-input">Latitud:</label>
+          <input type="text" id="latitude-input" placeholder="ej. 10.1234">
+        </div>
+        <div class="input-group">
+          <label for="longitude-input">Longitud:</label>
+          <input type="text" id="longitude-input" placeholder="ej. -66.5678">
+        </div>
+        <div class="button-group">
+          <button id="generate-link-button" type="button">Generar Link</button>
+          <button id="get-current-location-button" type="button">Obtener Ubicacion Actual</button>
+        </div>
+      </form>
+      <div id='map'></div>
+    </div>
+
+    <div id="button-container">
+      <button type="button" id="casa">Casa</button>
+      <button type="button" id="uru">URU</button>
+    </div>
+
+    <script src="script.js" type="module"></script>
+    
+  </body>
+</html>
